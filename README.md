@@ -1,120 +1,67 @@
-# FrankenPHP and Laravel Octane with Docker + Laravel 11 & Laravel 12
+# Task Manager — Laravel 11 & 12 + FrankenPHP + Docker Boilerplate
 
-This repo is a docker boilerplate to use for Laravel projects. Containers included in this docker:
+[![Laravel](https://img.shields.io/badge/Laravel-11%20%7C%2012-red?style=flat&logo=laravel&logoColor=white)](https://laravel.com/docs/)
+[![PHP](https://img.shields.io/badge/PHP-8.3-blue?style=flat&logo=php&logoColor=white)](https://www.php.net/)
+[![Docker](https://img.shields.io/badge/Docker-Container-blue?style=flat&logo=docker)](https://www.docker.com/)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3-brightgreen?style=flat&logo=vue.js)](https://vuejs.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-Database-blue?style=flat&logo=mysql)](https://www.mysql.com/)
 
-1. [Laravel 11 & 12](https://laravel.com/docs/)
-2. [FrankenPHP](https://frankenphp.dev/docs/docker/)
-3. MySQL
-4. Redis
-5. Supervisor
-6. [Octane](https://laravel.com/docs/octane)
-7. Minio for S3
-8. MailPit
+---
 
-The purpose of this repo is to run [Laravel 11 & Laravel 12](https://laravel.com/docs/) in a Docker container using [Octane](https://laravel.com/docs/octane) and [FrankenPHP](https://frankenphp.dev/docs/docker/).
+## 📖 Описание проекта
 
-## Installation
+Этот проект — простое веб-приложение для управления задачами, реализованное с использованием Laravel 11/12 (backend), Vue.js (frontend), MySQL (база данных) и Docker для контейнеризации.
 
-Use the package manager [git](https://git-scm.com/downloads) to install Docker boilerplate.
+В проекте применяются современные инструменты и технологии:
+- Laravel Octane + FrankenPHP для быстрого и эффективного backend;
+- MySQL для хранения данных;
+- Vue.js для динамичного SPA интерфейса;
+- Docker для удобства разработки и деплоя.
 
-```bash
-# setup project locally
-$ git clone https://github.com/jaygaha/laravel-11-frankenphp-docker.git
-# Navigate to project directory:
-$ cd laravel-11-frankenphp-docker
-```
+---
 
-## Application Setup
+## 🚀 Возможности приложения
 
-Copy the .env.example file to .env:
+- Создание задач с названием, описанием и сроком выполнения;
+- Просмотр списка задач;
+- Редактирование и удаление задач;
+- Адаптивный и удобный интерфейс с использованием Bootstrap 5 или Tailwind CSS;
+- Полная контейнеризация для быстрого запуска и разработки.
 
-```bash
-# Linux
-$ cp .env.example .env
-# OR
-# Windows
-$ copy .env.example .env
-```
+---
 
-Edit the `.env` file to configure your application settings. At a minimum, you should set the following variables:
+## 📦 Технологии и сервисы
 
-- `APP_NAME`: The name of your application.
-- `APP_ENV`: The environment your application is running in (e.g., local, production).
-- `APP_KEY`: The application key (will be generated in the next step).
-- `APP_DEBUG`: Set to `true` for debugging.
-- `APP_URL`: The URL of your application.
-- `DB_CONNECTION`: The database connection (e.g., mysql).
-- `DB_HOST`: The database host.
-- `DB_PORT`: The database port.
-- `DB_DATABASE`: The database name.
-- `DB_USERNAME`: The database username.
-- `DB_PASSWORD`: The database password.
+| Сервис         | Описание                       |
+|----------------|-------------------------------|
+| Laravel 11/12  | Backend REST API              |
+| FrankenPHP     | Высокопроизводительный PHP-сервер |
+| Laravel Octane | Оптимизация производительности|
+| MySQL          | СУБД                          |
+| Redis          | Кеширование                   |
+| Vue.js 3       | Frontend SPA                  |
+| Docker         | Контейнеризация приложения    |
+| Minio          | S3 совместимое хранилище      |
+| MailPit        | Локальный SMTP-сервер для тестов |
 
-**Edit docker related setting according to your preferences.**
+---
 
-Run composer to install the required packages:
+## 📋 Содержание README
 
-```bash
-# install required packages
-$ composer install
-```
+- [Установка](#установка)
+- [Настройка окружения](#настройка-окружения)
+- [Запуск приложения](#запуск-приложения)
+- [Использование API](#использование-api)
+- [Структура проекта](#структура-проекта)
+- [Контрибьюция](#контрибьюция)
+- [Лицензия](#лицензия)
 
-Generate a new application key:
+---
 
-```bash
-# app key setup
-$ php artisan key:generate
-```
+## 🛠️ Установка
 
-## Usage
-
-Build the Docker images:
+Клонируйте репозиторий:
 
 ```bash
-# build docker images
-$ docker compose build
-```
-
-Run the containers:
-
-```bash
-# Run containers
-$ docker compose up -d
-```
-
-To stop the containers, run:
-
-```bash
-# Stop containers
-$ docker compose down
-```
-
-To view the logs of a specific container, run:
-
-```bash
-# View logs
-$ docker compose logs <container_name>
-```
-
-**If you are using podman replace `docker` with `podman`**
-
-To access the application, open your browser and navigate to the URL specified in the `APP_URL` variable in your `.env` file.
-
-
-## Upgrading
-
-Upgrading To 12.0 From 11.x
-
-```bash
-$ composer update
-```
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-FREE TO USE
-
-### Happy Coding :)
+git clone https://github.com/jaygaha/laravel-11-frankenphp-docker.git
+cd laravel-11-frankenphp-docker

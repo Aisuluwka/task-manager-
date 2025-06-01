@@ -1,89 +1,72 @@
+version: '3.8'
+
 services:
-    web:
-        build:
-            context: ./
-            dockerfile: ./.docker/php/Dockerfile.local
-        ports:
-            - ${APP_PORT:-8000}:8000
-            - ${VITE_PORT:-5173}:${VITE_PORT:-5173}
-        volumes:
-            - ./:${WORKDIR}
-            - ./vendor/:${WORKDIR}/vendor
-        networks:
-            - lara11-beta
-        depends_on:
-            - mysql
-            - redis
-            - minio
-            - mailpit
-    mysql:
-        image: mysql/mysql-server:${MYSQL_VERSION:-8.0}
-        ports:
-            - ${FORWARD_DB_PORT:-3306}:3306
-        environment:
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-            MYSQL_ROOT_HOST: "%"
-            MYSQL_DATABASE: ${DB_DATABASE}
-            MYSQL_USER: ${DB_USERNAME}
-            MYSQL_PASSWORD: ${DB_PASSWORD}
-            MYSQL_ALLOW_EMPTY_PASSWORD: 1
-        volumes:
-            - ${DB_VOLUME_LOCAL:-./database/mysql-test-data}:/var/lib/mysql
-        networks:
-            - lara11-beta
-        healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - -p${DB_PASSWORD}
-            retries: 3
-            timeout: 5s
-    redis:
-        image: redis:alpine
-        ports:
-            - ${FORWARD_REDIS_PORT:-6379}:6379
-        volumes:
-            - ${REDIS_VOLUME_LOCAL:-./database/redis-data}:/data
-        networks:
-            - lara11-beta
-        healthcheck:
-            test:
-                - CMD
-                - redis-cli
-                - ping
-            retries: 3
-            timeout: 5s
-    minio:
-        image: minio/minio:latest
-        ports:
-            - ${FORWARD_MINIO_PORT:-9000}:9000
-            - ${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900
-        environment:
-            MINIO_ROOT_USER: ${MINIO_ROOT_USER:-sail}
-            MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-password}
-        volumes:
-            - ${MINIO_VOLUME_LOCAL:-./storage/minio-data}:/data
-        networks:
-            - lara11-beta
-        command: minio server /data/minio --console-address ":${FORWARD_MINIO_CONSOLE_PORT}"
-        healthcheck:
-            test:
-                - CMD
-                - curl
-                - -f
-                - http://localhost:${FORWARD_MINIO_PORT}/minio/health/live
-            retries: 3
-            timeout: 5s
-    mailpit:
-        image: axllent/mailpit:latest
-        ports:
-            - ${FORWARD_MAILPIT_PORT:-1025}:1025
-            - ${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025
-        volumes:
-            - ${MP_VOLUME_LOCAL:-./storage/mail-data}:/data
-        networks:
-            - lara11-beta
+  app:
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile.local
+    image: laravel_app
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+    # ...
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+    ports:
+      - "8000:8000"        # HTTP
+      - "8443:443"         # HTTPS (опционально)
+    depends_on:
+      - db
+      - node
+    networks:
+      - app-network
+    command: bash -c "composer install && php artisan serve --host=0.0.0.0 --port=8000"
+
+
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: task_manager
+      MYSQL_USER: taskuser
+      MYSQL_PASSWORD: 526428
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    #healthcheck:
+      #test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p526428"]
+      #retries: 5
+      #timeout: 5s
+      #interval: 10s
+
+  node:
+    image: node:18
+    container_name: node
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+
+volumes:
+  dbdata:
+
 networks:
-    lara11-beta:
-        driver: bridge
+  app-network:
+    driver: bridge

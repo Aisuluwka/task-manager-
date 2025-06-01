@@ -7,3 +7,5 @@ storage/framework/cache/*
 storage/framework/views/*
 storage/logs/*
 vendor/
+database/mysql-database/mysql.sock
+
