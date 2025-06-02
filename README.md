@@ -65,3 +65,8 @@
 ```bash
 git clone https://github.com/jaygaha/laravel-11-frankenphp-docker.git
 cd laravel-11-frankenphp-docker
+
+
+git clone https://github.com/Aisuluwka/task-manager-.git
+cd task-manager
+docker-compose up --build
